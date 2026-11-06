@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/$defs/BreathingPattern",
+  "$defs": {
+    "BreathingPattern": {
+      "type": "object",
+      "properties": {
+        "$schema": {
+          "type": "string"
+        },
+        "schemaVersion": {
+          "type": "string",
+          "const": "1"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "shortName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "locale": {
+          "description": "BCP 47 language tag of the texts, e.g. \"de-DE\".",
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "safety": {
+          "type": "object",
+          "properties": {
+            "notes": {
+              "type": "string"
+            },
+            "contraindications": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "exhaleStyle": {
+          "type": "string",
+          "enum": [
+            "passive",
+            "gentle"
+          ],
+          "description": "Exhale cue style: \"passive\" (natural elastic recoil) or \"gentle\" (gentle abdominal engagement). Default is gentle."
+        },
+        "guide": {
+          "type": "object",
+          "properties": {
+            "arms": {
+              "type": "string",
+              "enum": [
+                "hands-on-body",
+                "raise-on-inhale"
+              ],
+              "description": "Arm cue variant: \"hands-on-body\" (default, hands on belly and chest) or \"raise-on-inhale\" (arms rotate up overhead on inhale)."
+            }
+          },
+          "description": "Optional visual cues for the human guide figure."
+        },
+        "phases": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "inhale",
+                  "hold",
+                  "exhale"
+                ],
+                "description": "Breath direction. A hold keeps the lung volume reached by the previous phase."
+              },
+              "durationMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 120000,
+                "description": "Duration in ms at speed 1. 0 means the phase is skipped."
+              },
+              "targetVolume": {
+                "description": "Lung fill at the end of the phase (0 = empty, 1 = full). Defaults: inhale 1, exhale 0. Not allowed on holds.",
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "easing": {
+                "type": "string",
+                "enum": [
+                  "linear",
+                  "easeInOutCubic",
+                  "easeOutSine"
+                ],
+                "description": "Curve of the volume change within the phase. Ignored for holds."
+              },
+              "label": {
+                "description": "Display label, e.g. \"Ruhe\".",
+                "type": "string"
+              },
+              "cue": {
+                "description": "Audio/visual cue key; renderers pick a default per kind when omitted.",
+                "type": "string"
+              },
+              "airway": {
+                "type": "string",
+                "enum": [
+                  "nose",
+                  "mouth"
+                ]
+              },
+              "segments": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "durationMs": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0,
+                      "maximum": 120000,
+                      "description": "Duration in milliseconds at speed 1."
+                    },
+                    "region": {
+                      "type": "string",
+                      "enum": [
+                        "abdominal",
+                        "thoracic",
+                        "clavicular"
+                      ],
+                      "description": "Standard breathing region: abdominal (diaphragmatic/belly), thoracic (costal/ribs), clavicular (upper chest)."
+                    },
+                    "label": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "durationMs",
+                    "region"
+                  ],
+                  "description": "Sub-stage of a phase (e.g. the three-part breath). Durations are relative weights over the phase."
+                }
+              }
+            },
+            "required": [
+              "kind",
+              "durationMs"
+            ]
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "id",
+        "name",
+        "phases"
+      ],
+      "title": "Breathing pattern",
+      "description": "A looping breathing exercise."
+    }
+  },
+  "$id": "https://raw.githubusercontent.com/felixinberlin/atmende-schildkroete/main/schema/breathing-pattern.v1.schema.json"
+}

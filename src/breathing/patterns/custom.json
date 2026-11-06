@@ -1,0 +1,15 @@
+{
+  "$schema": "../../../schema/breathing-pattern.v1.schema.json",
+  "schemaVersion": "1",
+  "id": "custom",
+  "name": "Individueller Atemrhythmus",
+  "shortName": "Benutzerdefiniert",
+  "description": "Frei wählbare Sekundenzeiten für Einatmen, Halten, Ausatmen und Ruhepause.",
+  "locale": "de-DE",
+  "phases": [
+    { "kind": "inhale", "durationMs": 4000 },
+    { "kind": "hold", "durationMs": 2000, "label": "Halten" },
+    { "kind": "exhale", "durationMs": 5000 },
+    { "kind": "hold", "durationMs": 1000, "label": "Ruhe" }
+  ]
+}

@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tika die Schildkröte · Synchronisierter Atembegleiter & Audioplayer</title>
+  <style>
+    :root {
+      --bg-dark: #061522;
+      --card-bg: #0c2134;
+      --card-border: #1a3854;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent-in: #5eead4;
+      --accent-hold: #fde047;
+      --accent-out: #38bdf8;
+      --accent-primary: #10b981;
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+    }
+
+    header {
+      text-align: center;
+      max-width: 840px;
+      margin-bottom: 22px;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 20px;
+      background: #0f3657;
+      color: #7dd3fc;
+      border: 1px solid #1e4d79;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-size: 29px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+    p.lead {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Main Container */
+    .app-container {
+      width: 100%;
+      max-width: 1020px;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .app-container { grid-template-columns: 1fr; }
+    }
+
+    /* Stage / SVG Card */
+    .stage-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+      position: relative;
+    }
+    .svg-wrapper {
+      width: 100%;
+      max-width: 620px;
+      aspect-ratio: 4 / 3;
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: #051421;
+    }
+    .svg-wrapper svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Live Pacing Bar & Phase Pill */
+    .pacing-feedback {
+      width: 100%;
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .phase-pill {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 7px 20px;
+      border-radius: 30px;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .phase-pill.inhale { background: rgba(94, 234, 212, 0.16); color: var(--accent-in); border: 1px solid var(--accent-in); }
+    .phase-pill.hold   { background: rgba(253, 224, 71, 0.16); color: var(--accent-hold); border: 1px solid var(--accent-hold); }
+    .phase-pill.exhale { background: rgba(56, 189, 248, 0.16); color: var(--accent-out); border: 1px solid var(--accent-out); }
+    .phase-pill.rest   { background: rgba(148, 163, 184, 0.16); color: #cbd5e1; border: 1px solid #64748b; }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: #081a29;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981, #38bdf8);
+      width: 0%;
+      transition: width 0.05s linear;
+    }
+
+    .dirga-stage-indicator {
+      font-size: 12px;
+      font-weight: 600;
+      color: #fde047;
+      background: rgba(253, 224, 71, 0.12);
+      border: 1px solid rgba(253, 224, 71, 0.35);
+      padding: 4px 14px;
+      border-radius: 14px;
+      display: none;
+    }
+    .dirga-stage-indicator.active {
+      display: inline-block;
+    }
+
+    /* Player Controls Bar */
+    .controls-bar {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    button.btn-main {
+      padding: 10px 22px;
+      border-radius: 24px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1px solid #10b981;
+      background: #10b981;
+      color: #04241a;
+      transition: all 0.2s;
+    }
+    button.btn-main:hover {
+      background: #34d399;
+      transform: translateY(-1px);
+    }
+    button.btn-sec {
+      padding: 10px 16px;
+      border-radius: 24px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1px solid var(--card-border);
+      background: #0f2c45;
+      color: var(--text-main);
+      transition: all 0.2s;
+    }
+    button.btn-sec:hover { background: #19466d; }
+    button.btn-sec.active {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.2);
+      color: #7dd3fc;
+    }
+
+    /* Turtle + human breathing guide side by side */
+    .scene-row {
+      width: 100%;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+    }
+    .scene-row .svg-wrapper { flex: 3 1 0; min-width: 0; }
+    .human-guide {
+      flex: 1.6 1 0;
+      min-width: 0;
+      max-width: 300px;
+      aspect-ratio: 240 / 300;
+      --hg-ink: #d7efe6;
+      --hg-bg: var(--card-bg);
+      --hg-label: #a7c4b8;
+      --hg-air: #7dd3fc;
+      --hg-air-label: #7dd3fc;
+      --hg-muscle: #8a6f69;
+      --hg-muscle-active: #fb7a55;
+    }
+    .human-guide svg { width: 100%; height: 100%; display: block; }
+    @media (max-width: 640px) {
+      .scene-row { flex-direction: column; }
+      .human-guide { width: 70%; }
+    }
+
+    /* Fullscreen stage (native API or iPhone CSS fallback) */
+    .stage-card:fullscreen,
+    .stage-card.is-pseudo-fullscreen {
+      border: 0;
+      border-radius: 0;
+      justify-content: center;
+      padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+      background: #051421;
+    }
+    .stage-card.is-pseudo-fullscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      height: 100dvh;
+    }
+    .stage-card:fullscreen .svg-wrapper,
+    .stage-card.is-pseudo-fullscreen .svg-wrapper {
+      max-width: none;
+      width: auto;
+      max-height: calc(100dvh - 190px);
+      border-radius: 0;
+    }
+    .stage-card:fullscreen .human-guide,
+    .stage-card.is-pseudo-fullscreen .human-guide {
+      max-width: none;
+      max-height: calc(100dvh - 190px);
+    }
+    .stage-card:fullscreen .pacing-feedback,
+    .stage-card.is-pseudo-fullscreen .pacing-feedback {
+      width: min(100%, 720px);
+    }
+
+    /* Sidebar Panels */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 18px;
+    }
+    .panel h2 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #bae6fd;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin: 12px 0 6px;
+    }
+    select, input[type="range"] {
+      width: 100%;
+      background: #081a29;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 13px;
+      outline: none;
+    }
+    select:focus {
+      border-color: #38bdf8;
+    }
+
+    .tech-info-card {
+      margin-top: 10px;
+      background: #081a29;
+      border: 1px solid #143553;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+    .tech-info-card strong {
+      color: #5eead4;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* Custom Timers Sliders */
+    .custom-sliders {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      background: #081a29;
+      border: 1px dashed #1e4d79;
+      border-radius: 12px;
+      gap: 10px;
+      flex-direction: column;
+    }
+    .custom-sliders.active {
+      display: flex;
+    }
+    .slider-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Layer Toggles */
+    .layer-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .layer-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #cbd5e1;
+      padding: 6px 8px;
+      background: #081a29;
+      border-radius: 8px;
+      border: 1px solid #132f48;
+    }
+    .layer-item input[type="checkbox"] {
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+      accent-color: #10b981;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="badge">Tika · Atmende Schildkröte</span>
+    <h1>Tika die Meeres-Schildkröte</h1>
+    <p class="lead">Parametrisch synchronisierte Atemtechniken & Audio-Engine für die Schildkröten-Animation</p>
+  </header>
+
+  <div class="app-container">
+
+    <!-- Left Stage: SVG Character & Visual Pacer -->
+    <div class="stage-card">
+      <div class="scene-row">
+      <div class="svg-wrapper" id="turtleViewport">
+        <!-- Modular SVG Character -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%" id="tikaBreathingTurtle">
+          <defs>
+            <radialGradient id="p-grad-ocean-center" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#0b2840" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#082032" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="p-grad-ocean-depth" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#0f3657" stop-opacity="0.6"/>
+              <stop offset="40%" stop-color="#082032" stop-opacity="0.95"/>
+              <stop offset="100%" stop-color="#041422" stop-opacity="1"/>
+            </linearGradient>
+            <linearGradient id="p-grad-belly-warmth" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#fde047"/>
+              <stop offset="100%" stop-color="#eab308"/>
+            </linearGradient>
+            <radialGradient id="p-grad-bubble" cx="35%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+              <stop offset="40%" stop-color="#7dd3fc" stop-opacity="0.7"/>
+              <stop offset="100%" stop-color="#0284c7" stop-opacity="0.3"/>
+            </radialGradient>
+            <g id="bubble-def">
+              <circle cx="0" cy="0" r="10" fill="url(#p-grad-bubble)"/>
+              <circle cx="-3" cy="-3" r="2.8" fill="#ffffff" opacity="0.85"/>
+              <circle cx="0" cy="0" r="10" fill="none" stroke="#38bdf8" stroke-width="1.2" opacity="0.7"/>
+            </g>
+          </defs>
+
+          <!-- LAYER 1: BACKDROP -->
+          <g id="layer-backdrop">
+            <rect width="800" height="600" fill="url(#p-grad-ocean-depth)" rx="24"/>
+            <ellipse cx="400" cy="560" rx="380" ry="140" fill="#041422" opacity="0.8"/>
+            <ellipse cx="400" cy="70" rx="360" ry="100" fill="#0f3657" opacity="0.45"/>
+            <ellipse cx="400" cy="300" rx="320" ry="240" fill="url(#p-grad-ocean-center)"/>
+          </g>
+
+          <!-- LAYER 2: AMBIENT PARTICLES -->
+          <g id="layer-ambient">
+            <circle cx="110" cy="220" r="5" fill="#7dd3fc" opacity="0.35"/>
+            <circle cx="230" cy="410" r="7" fill="#7dd3fc" opacity="0.3"/>
+            <circle cx="690" cy="160" r="5.5" fill="#7dd3fc" opacity="0.35"/>
+            <circle cx="750" cy="380" r="4" fill="#7dd3fc" opacity="0.3"/>
+          </g>
+
+          <!-- LAYER 3: GUIDES -->
+          <g id="layer-guides">
+            <circle cx="400" cy="300" r="230" fill="none" stroke="#2dd4bf" stroke-width="2.5" stroke-dasharray="8 6" opacity="0.35"/>
+            <circle cx="400" cy="300" r="245" fill="none" stroke="#5eead4" stroke-width="1.2" stroke-dasharray="3 7" opacity="0.2"/>
+          </g>
+
+          <!-- LAYER 4: MAIN CHARACTER RIG -->
+          <g id="layer-turtle-character">
+            <!-- Distant flippers -->
+            <g id="rig-limbs-distant">
+              <path id="rig-flipper-rear-lt" d="M 270 290 C 230 250 170 260 130 290 C 120 298 130 315 150 315 C 190 315 240 310 270 290 Z" fill="#047857"/>
+              <path id="rig-flipper-front-lt" d="M 470 250 C 510 180 570 120 630 110 C 645 108 650 120 640 135 C 595 190 535 255 480 270 Z" fill="#047857"/>
+            </g>
+
+            <!-- Tail -->
+            <path id="rig-tail" d="M 230 320 C 190 325 150 338 135 348 C 150 355 190 350 235 338 Z" fill="#10b981"/>
+
+            <!-- Soft Belly (Plastron) -->
+            <g id="rig-plastron">
+              <path id="part-belly-base" d="M 250 320 C 270 380 360 415 450 395 C 480 388 495 365 500 330 C 460 345 360 355 250 320 Z" fill="url(#p-grad-belly-warmth)"/>
+              <path id="part-belly-shadow" d="M 280 350 C 340 395 420 405 460 385 C 440 375 360 365 300 340 Z" fill="#eab308"/>
+              <path id="part-belly-groove-1" d="M 340 345 C 350 372 370 392 390 398" stroke="#ca8a04" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <path id="part-belly-groove-2" d="M 415 340 C 430 365 445 380 460 382" stroke="#ca8a04" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <path id="part-belly-highlight" d="M 280 340 C 335 375 405 380 450 365" stroke="#fef9c3" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+            </g>
+
+            <!-- Shell (Carapace) -->
+            <g id="rig-carapace">
+              <path id="part-shell-dome" d="M 215 320 C 210 200 320 145 440 160 C 510 170 545 225 530 320 C 475 345 275 345 215 320 Z" fill="#065f46"/>
+              <path id="part-shell-rim" d="M 210 320 C 230 345 300 358 385 354 C 460 350 515 342 535 320 C 525 338 460 365 385 362 C 295 360 225 340 210 320 Z" fill="#f59e0b"/>
+
+              <g id="rig-scutes">
+                <g id="scute-vertebral-1">
+                  <path d="M 255 240 L 310 220 L 330 260 L 290 280 L 250 265 Z" fill="#10b981"/>
+                  <circle cx="288" cy="254" r="3.5" fill="#a7f3d0" opacity="0.8"/>
+                </g>
+                <g id="scute-vertebral-2">
+                  <path d="M 320 215 L 390 195 L 430 220 L 400 260 L 340 255 Z" fill="#34d399"/>
+                  <circle cx="375" cy="230" r="4" fill="#ecfdf5" opacity="0.9"/>
+                </g>
+                <g id="scute-vertebral-3">
+                  <path d="M 400 195 L 455 210 L 485 245 L 440 265 L 410 225 Z" fill="#10b981"/>
+                  <circle cx="445" cy="232" r="3.5" fill="#a7f3d0" opacity="0.8"/>
+                </g>
+                <g id="scute-costal-2">
+                  <path d="M 345 265 L 405 268 L 435 310 L 375 315 L 330 295 Z" fill="#059669"/>
+                  <circle cx="380" cy="290" r="3.5" fill="#a7f3d0" opacity="0.8"/>
+                </g>
+                <g id="scute-costal-3">
+                  <path d="M 445 270 L 485 250 L 515 285 L 495 320 L 440 315 Z" fill="#10b981"/>
+                  <circle cx="475" cy="290" r="3" fill="#a7f3d0" opacity="0.8"/>
+                </g>
+                <g id="scute-costal-1">
+                  <path d="M 285 285 L 325 295 L 340 325 L 280 325 L 250 305 Z" fill="#047857"/>
+                  <circle cx="295" cy="308" r="3" fill="#a7f3d0" opacity="0.8"/>
+                </g>
+              </g>
+
+              <path id="part-shell-sunbeam" d="M 260 215 C 330 170 410 175 465 195" stroke="#a7f3d0" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+            </g>
+
+            <!-- Head & Neck -->
+            <g id="rig-head-neck">
+              <path id="part-neck-base" d="M 470 315 C 500 320 540 310 575 280 C 585 265 575 240 550 230 C 515 220 480 240 460 265 Z" fill="#10b981"/>
+              <path id="part-throat-gular" d="M 535 290 C 555 304 575 298 590 282" stroke="#059669" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
+              <path id="part-head-profile" d="M 545 240 C 555 195 615 190 655 215 C 690 238 695 275 670 295 C 640 315 585 310 555 280 C 542 268 540 252 545 240 Z" fill="#10b981"/>
+              <path id="part-chin-shadow" d="M 565 282 C 600 305 645 305 668 288 C 650 295 610 295 580 282 Z" fill="#059669"/>
+              <circle id="part-nostril" cx="674" cy="250" r="2.5" fill="#064e3b"/>
+              <path id="part-mouth" d="M 676 264 C 668 274 650 280 630 276" stroke="#064e3b" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <ellipse id="part-cheek" cx="628" cy="270" rx="9" ry="6" fill="#fb7185" opacity="0.6"/>
+
+              <g id="part-head-scales" fill="#6ee7b7">
+                <circle cx="585" cy="215" r="4"/>
+                <circle cx="605" cy="210" r="5"/>
+                <circle cx="625" cy="218" r="4.5"/>
+              </g>
+
+              <g id="rig-eye">
+                <ellipse cx="605" cy="235" rx="15" ry="17" fill="#ffffff" stroke="#065f46" stroke-width="2"/>
+                <ellipse cx="608" cy="235" rx="11" ry="13" fill="#1e293b"/>
+                <g fill="#ffffff">
+                  <circle cx="612" cy="230" r="4.5"/>
+                  <circle cx="604" cy="242" r="2.2"/>
+                  <circle cx="615" cy="239" r="1.3"/>
+                </g>
+              </g>
+            </g>
+
+            <!-- Foreground flippers -->
+            <g id="rig-flipper-front-rt">
+              <path d="M 470 315 C 510 335 565 390 580 460 C 585 485 568 495 545 490 C 495 478 450 410 430 360 C 420 338 440 315 470 315 Z" fill="#10b981" stroke="#059669" stroke-width="2"/>
+              <circle cx="475" cy="355" r="5" fill="#6ee7b7"/>
+              <circle cx="500" cy="395" r="5.5" fill="#6ee7b7"/>
+              <circle cx="525" cy="440" r="4.5" fill="#6ee7b7"/>
+            </g>
+
+            <g id="rig-flipper-rear-rt">
+              <path d="M 245 335 C 215 370 160 415 125 425 C 112 428 110 415 122 400 C 155 360 215 328 245 335 Z" fill="#10b981" stroke="#059669" stroke-width="2"/>
+              <circle cx="170" cy="385" r="4" fill="#6ee7b7"/>
+            </g>
+
+            <!-- Bubbles (Exhale) -->
+            <g id="rig-breath-fx" style="opacity: 0;">
+              <use href="#bubble-def" transform="scale(1.2)"/>
+            </g>
+          </g>
+
+          <!-- LAYER 5: HUD OVERLAY -->
+          <g id="layer-hud" transform="translate(400, 552)">
+            <rect x="-240" y="-18" width="480" height="36" rx="18" fill="#051726" stroke="#1e3a5f" stroke-width="1.5" opacity="0.92"/>
+            <text id="hudText" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" letter-spacing="2" fill="#5eead4" y="4">
+              EINATMEN · HALTEN · AUSATMEN
+            </text>
+          </g>
+        </svg>
+      </div>
+        <div class="human-guide" id="humanGuide"></div>
+      </div>
+
+      <!-- Real-Time Visual Pacer -->
+      <div class="pacing-feedback">
+        <div id="phasePill" class="phase-pill inhale">
+          <span id="phaseIcon">🌿</span>
+          <span id="phaseText">EINATMEN (4s)</span>
+          <span id="phaseTimer">4.0s</span>
+        </div>
+        <span id="dirgaStageBadge" class="dirga-stage-indicator">Stufe 1: Flanke</span>
+        <div class="progress-track">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+      </div>
+
+      <!-- Player Controls -->
+      <div class="controls-bar">
+        <button id="btnPlayPause" class="btn-main">⏸ Pause</button>
+        <button id="btnSoundToggle" class="btn-sec active">🔊 Ton: Meeresrauschen & Atem</button>
+        <button id="btnReset" class="btn-sec">↺ Neustart</button>
+        <button id="btnFullscreen" class="btn-sec" aria-pressed="false" title="Vollbild (Esc zum Beenden)">⛶ Vollbild</button>
+      </div>
+    </div>
+
+    <!-- Right Sidebar: Audio Settings & SVG Modularity -->
+    <div class="sidebar">
+
+      <!-- Panel 1: Technique Selector -->
+      <div class="panel">
+        <h2>🧘 Atemtechnik</h2>
+
+        <label for="techniqueSelect">Technik auswählen</label>
+        <select id="techniqueSelect">
+          <option value="ocean">🌊 Ozean-Wellenatmung (4s Ein · 1s Halt · 4s Aus · 1s Ruhe)</option>
+          <option value="box">🟦 Box Breathing / Vier-Viereck (4 · 4 · 4 · 4)</option>
+          <option value="calm478">🌙 4-7-8 Tiefenentspannung & Vagusnerv (4 · 7 · 8)</option>
+          <option value="dirga">🐢 Dirga Pranayama 3-Stufen (1.5s + 1.5s + 1.5s)</option>
+          <option value="coherence">⏱ Kohärenz-Atmung (5.5s Ein · 5.5s Aus)</option>
+          <option value="star">⭐ Sternen-Atmung (3s Ein · 1s Halt · 4s Aus · 1s Ruhe)</option>
+          <option value="custom">🎛 Eigener Rhythmus (Frei einstellbar)</option>
+        </select>
+
+        <div class="tech-info-card">
+          <strong id="techTitle">Ozean-Wellenatmung (Urge Surfing)</strong>
+          <span id="techDesc">Sanfter Rhythmus wie die Meereswellen am Ufer. Ideal bei innerer Unruhe, Stress und Suchtdruck.</span>
+        </div>
+
+        <!-- Custom Sliders -->
+        <div id="customSliders" class="custom-sliders">
+          <div class="slider-row">
+            <span>Einatmen</span>
+            <span id="valCustomIn">4.0s</span>
+          </div>
+          <input type="range" id="slideCustomIn" min="1" max="10" step="0.5" value="4">
+
+          <div class="slider-row">
+            <span>Halten (Voll)</span>
+            <span id="valCustomHold">2.0s</span>
+          </div>
+          <input type="range" id="slideCustomHold" min="0" max="10" step="0.5" value="2">
+
+          <div class="slider-row">
+            <span>Ausatmen</span>
+            <span id="valCustomEx">5.0s</span>
+          </div>
+          <input type="range" id="slideCustomEx" min="1" max="12" step="0.5" value="5">
+
+          <div class="slider-row">
+            <span>Ruhe (Leer)</span>
+            <span id="valCustomRest">1.0s</span>
+          </div>
+          <input type="range" id="slideCustomRest" min="0" max="6" step="0.5" value="1">
+        </div>
+
+        <label for="speedSlider">Geschwindigkeit (<span id="speedVal">1.0x</span>)</label>
+        <input type="range" id="speedSlider" min="50" max="150" value="100">
+      </div>
+
+      <!-- Panel 2: Soundscape & Audio Engine -->
+      <div class="panel">
+        <h2>🔊 Klang & Atemgeräusche</h2>
+
+        <label for="soundProfile">Audio-Profil</label>
+        <select id="soundProfile">
+          <option value="ocean_master">🌊 Meeresrauschen & Atem (Kombiniert)</option>
+          <option value="breath_pure">🍃 Sanfter Atemhauch (Ujjayi / Reiner Atem)</option>
+          <option value="chimes_bell">🔔 Achtsamkeits-Glocke & Klangschale</option>
+          <option value="synth_webaudio">✨ Generativer Web-Audio-Synthesizer</option>
+          <option value="mute">🔇 Lautlos (Nur visuell)</option>
+        </select>
+
+        <label for="volumeSlider">Lautstärke (<span id="volumeVal">80%</span>)</label>
+        <input type="range" id="volumeSlider" min="0" max="100" value="80">
+
+        <p class="audio-status" id="audioStatus" style="font-size: 11px; color: #94a3b8; margin-top: 10px; line-height: 1.5;">
+          ✓ Audio synchronisiert phasenstarr zu Einatmung, Halten, Ausatmung und Ruhe.
+        </p>
+      </div>
+
+      <!-- Panel 3: Modulare SVG-Ebenen -->
+      <div class="panel">
+        <h2>🧩 Modulare Ebenen (SVG Rig)</h2>
+        <div class="layer-list">
+          <label class="layer-item">
+            <span>Tika Schildkröte (Character Rig)</span>
+            <input type="checkbox" id="toggleTurtle" checked>
+          </label>
+          <label class="layer-item">
+            <span>Tiefsee-Hintergrund</span>
+            <input type="checkbox" id="toggleBackdrop" checked>
+          </label>
+          <label class="layer-item">
+            <span>Atem-Wellenringe (Guide Rings)</span>
+            <input type="checkbox" id="toggleGuides" checked>
+          </label>
+          <label class="layer-item">
+            <span>Schwebende Ozean-Partikel</span>
+            <input type="checkbox" id="toggleAmbient" checked>
+          </label>
+          <label class="layer-item">
+            <span>Blasen-Strom (Ausatmung)</span>
+            <input type="checkbox" id="toggleBubbles" checked>
+          </label>
+          <label class="layer-item">
+            <span>HUD-Badge (Rhythm Bar)</span>
+            <input type="checkbox" id="toggleHUD" checked>
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Engine generated from editor/src/breathing (npm run build:engine in editor/).
+       Classic script (UMD global), so this page also works when opened directly via file://. -->
+  <script src="turtle_breathing_engine.js"></script>
+  <script>
+  (() => {
+    const { createTurtleSession, createFullscreenController, findPattern, fromFourPhase, HumanGuideRenderer, prefersReducedMotion, SOUND_PROFILES } = window.TurtleBreathing;
+
+    const $ = (id) => document.getElementById(id);
+    const svgEl = $('tikaBreathingTurtle');
+    const phasePill = $('phasePill');
+    const phaseIcon = $('phaseIcon');
+    const phaseText = $('phaseText');
+    const phaseTimer = $('phaseTimer');
+    const progressBar = $('progressBar');
+    const stageBadge = $('dirgaStageBadge');
+    const hudText = $('hudText');
+    const btnPlayPause = $('btnPlayPause');
+    const btnSoundToggle = $('btnSoundToggle');
+    const techniqueSelect = $('techniqueSelect');
+    const techTitle = $('techTitle');
+    const techDesc = $('techDesc');
+    const customSliders = $('customSliders');
+    const soundProfileSelect = $('soundProfile');
+
+    // Display per cue key (inhale / holdIn / exhale / holdOut).
+    const CUE_UI = {
+      inhale: { icon: '🌿', text: 'EINATMEN', hud: 'EINATMEN · BRUST & BAUCH WEITEN', color: '#5eead4', pill: 'inhale' },
+      holdIn: { icon: '✧', text: 'HALTEN & SPÜREN', hud: 'HALTEN · STILL AM WASSER', color: '#fde047', pill: 'hold' },
+      exhale: { icon: '🌊', text: 'AUSATMEN WIE DIE WELLEN', hud: 'AUSATMEN · ALLES LOSLASSEN', color: '#38bdf8', pill: 'exhale' },
+      holdOut: { icon: '♡', text: 'RUHE', hud: 'RUHEPAUSE · ANKOMMEN', color: '#94a3b8', pill: 'rest' }
+    };
+
+    const { session, audio } = createTurtleSession(svgEl, {
+      pattern: findPattern('ocean'),
+      audio: { profile: 'ocean_master', volume: 0.8, assetBase: 'editor/public/sounds/' }
+    });
+
+    // Human figure: follow the air and see which breathing muscles work.
+    session.addRenderer(new HumanGuideRenderer($('humanGuide'), { reducedMotion: prefersReducedMotion() }));
+
+    session.on('phase', ({ sample, cue }) => {
+      const ui = CUE_UI[cue] ?? CUE_UI.holdIn;
+      phasePill.className = 'phase-pill ' + ui.pill;
+      phaseIcon.textContent = ui.icon;
+      phaseText.textContent = `${ui.text} (${(sample.span.durationMs / session.speed / 1000).toFixed(1)}s)`;
+      hudText.textContent = ui.hud;
+      hudText.setAttribute('fill', ui.color);
+    });
+
+    session.on('tick', (s) => {
+      progressBar.style.width = (s.cycleProgress * 100).toFixed(1) + '%';
+      phaseTimer.textContent = (s.phaseRemainingMs / session.speed / 1000).toFixed(1) + 's';
+      const seg = s.segmentIndex !== undefined ? s.span.segments[s.segmentIndex] : undefined;
+      stageBadge.classList.toggle('active', Boolean(seg));
+      if (seg) stageBadge.textContent = `Stufe ${s.segmentIndex + 1}/${s.span.segments.length}: ${seg.label ?? seg.region}`;
+    });
+
+    session.on('state', ({ running }) => {
+      btnPlayPause.textContent = running ? '⏸ Pause' : '▶ Weiteratmen';
+    });
+
+    // Browsers only allow audio after a user gesture.
+    document.addEventListener('pointerdown', () => audio.unlock(), { once: true });
+
+    btnPlayPause.addEventListener('click', () => session.toggle());
+    $('btnReset').addEventListener('click', () => session.reset());
+
+    const btnFullscreen = $('btnFullscreen');
+    const fullscreen = createFullscreenController(document.querySelector('.stage-card'), (active) => {
+      btnFullscreen.textContent = active ? '✕ Vollbild beenden' : '⛶ Vollbild';
+      btnFullscreen.setAttribute('aria-pressed', String(active));
+    });
+    btnFullscreen.addEventListener('click', () => fullscreen.toggle());
+
+    function setSoundProfile(profile) {
+      audio.setProfile(profile);
+      soundProfileSelect.value = profile;
+      const muted = profile === 'mute';
+      btnSoundToggle.classList.toggle('active', !muted);
+      btnSoundToggle.textContent = muted ? '🔇 Ton stummgeschaltet' : '🔊 Ton aktiv: ' + SOUND_PROFILES[profile].label;
+    }
+    btnSoundToggle.addEventListener('click', () => setSoundProfile(audio.profile === 'mute' ? 'ocean_master' : 'mute'));
+    soundProfileSelect.addEventListener('change', (e) => setSoundProfile(e.target.value));
+
+    techniqueSelect.addEventListener('change', (e) => {
+      const isCustom = e.target.value === 'custom';
+      customSliders.classList.toggle('active', isCustom);
+      if (isCustom) return updateCustomTimings();
+      const pattern = findPattern(e.target.value);
+      session.setPattern(pattern);
+      techTitle.textContent = pattern.name;
+      techDesc.textContent = pattern.description ?? '';
+    });
+
+    const CUSTOM = { inhale: 'CustomIn', holdIn: 'CustomHold', exhale: 'CustomEx', holdOut: 'CustomRest' };
+    function updateCustomTimings() {
+      const timings = {};
+      for (const [key, suffix] of Object.entries(CUSTOM)) {
+        timings[key] = parseFloat($('slide' + suffix).value) * 1000;
+        $('val' + suffix).textContent = (timings[key] / 1000).toFixed(1) + 's';
+      }
+      const pattern = fromFourPhase(timings, findPattern('custom'));
+      session.setPattern(pattern);
+      techTitle.textContent = pattern.name;
+      techDesc.textContent = `Ein: ${timings.inhale / 1000}s · Halt: ${timings.holdIn / 1000}s · Aus: ${timings.exhale / 1000}s · Pause: ${timings.holdOut / 1000}s`;
+    }
+    Object.values(CUSTOM).forEach((suffix) => $('slide' + suffix).addEventListener('input', updateCustomTimings));
+
+    $('speedSlider').addEventListener('input', (e) => {
+      const speed = parseInt(e.target.value, 10) / 100;
+      $('speedVal').textContent = speed.toFixed(2) + 'x';
+      session.setSpeed(speed);
+    });
+
+    $('volumeSlider').addEventListener('input', (e) => {
+      const volume = parseInt(e.target.value, 10) / 100;
+      $('volumeVal').textContent = Math.round(volume * 100) + '%';
+      audio.setVolume(volume);
+    });
+
+    // Layer visibility toggles
+    const toggleMap = {
+      toggleTurtle: 'layer-turtle-character',
+      toggleBackdrop: 'layer-backdrop',
+      toggleGuides: 'layer-guides',
+      toggleAmbient: 'layer-ambient',
+      toggleBubbles: 'rig-breath-fx',
+      toggleHUD: 'layer-hud'
+    };
+    for (const [toggleId, elementId] of Object.entries(toggleMap)) {
+      const cb = $(toggleId);
+      const target = $(elementId);
+      cb?.addEventListener('change', () => { if (target) target.style.display = cb.checked ? '' : 'none'; });
+    }
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{
+  "$schema": "../../../schema/breathing-pattern.v1.schema.json",
+  "schemaVersion": "1",
+  "id": "dirga",
+  "name": "Dirga Pranayama (Dreistufiger Meeresatem)",
+  "shortName": "Dirga 3-Stufen (10s)",
+  "description": "Yogische Vollatmung in 3 Stufen: 1. Bauch 2. Rippen & Flanken 3. Brust & Schlüsselbeine. Ausatmen in einem ruhigen Fluss.",
+  "locale": "de-DE",
+  "tags": [
+    "yoga",
+    "body-awareness"
+  ],
+  "phases": [
+    {
+      "kind": "inhale",
+      "durationMs": 4500,
+      "segments": [
+        {
+          "durationMs": 1500,
+          "region": "abdominal",
+          "label": "Bauch"
+        },
+        {
+          "durationMs": 1500,
+          "region": "thoracic",
+          "label": "Rippen & Flanken"
+        },
+        {
+          "durationMs": 1500,
+          "region": "clavicular",
+          "label": "Brust & Schlüsselbeine"
+        }
+      ]
+    },
+    {
+      "kind": "hold",
+      "durationMs": 1000,
+      "label": "Halten"
+    },
+    {
+      "kind": "exhale",
+      "durationMs": 3500
+    },
+    {
+      "kind": "hold",
+      "durationMs": 1000,
+      "label": "Ruhe"
+    }
+  ]
+}

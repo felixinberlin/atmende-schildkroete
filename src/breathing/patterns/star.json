@@ -1,0 +1,38 @@
+{
+  "$schema": "../../../schema/breathing-pattern.v1.schema.json",
+  "schemaVersion": "1",
+  "id": "star",
+  "name": "Sternen-Atmung",
+  "shortName": "Stern (Arme hoch)",
+  "description": "Aktivierende Atemübung für Kinder: Beim Einatmen wie ein großer Stern die Arme weit nach oben heben, beim Ausatmen sanft senken. Zum Wachwerden und Bewegen – nicht zur Beruhigung.",
+  "locale": "de-DE",
+  "tags": [
+    "kids",
+    "activating"
+  ],
+  "guide": {
+    "arms": "raise-on-inhale"
+  },
+  "phases": [
+    {
+      "kind": "inhale",
+      "durationMs": 3000,
+      "label": "Arme heben wie ein Stern"
+    },
+    {
+      "kind": "hold",
+      "durationMs": 1000,
+      "label": "Stern leuchtet"
+    },
+    {
+      "kind": "exhale",
+      "durationMs": 4000,
+      "label": "Arme sanft senken"
+    },
+    {
+      "kind": "hold",
+      "durationMs": 1000,
+      "label": "Ruhe"
+    }
+  ]
+}

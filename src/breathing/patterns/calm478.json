@@ -1,0 +1,17 @@
+{
+  "$schema": "../../../schema/breathing-pattern.v1.schema.json",
+  "schemaVersion": "1",
+  "id": "calm478",
+  "name": "4-7-8 Tiefenentspannung & Schlaf",
+  "shortName": "4-7-8 Beruhigung",
+  "description": "Stimuliert gezielt den Vagusnerv. Verlangsamt den Puls und baut hartnäckige Anspannung ab.",
+  "locale": "de-DE",
+  "tags": ["sleep", "calming"],
+  "safety": { "notes": "Lange Atempause: bei Schwindel abbrechen und normal weiteratmen." },
+  "phases": [
+    { "kind": "inhale", "durationMs": 4000, "airway": "nose" },
+    { "kind": "hold", "durationMs": 7000, "label": "Halten" },
+    { "kind": "exhale", "durationMs": 8000, "airway": "mouth" },
+    { "kind": "hold", "durationMs": 500, "label": "Ruhe" }
+  ]
+}

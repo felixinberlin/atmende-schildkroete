@@ -1,0 +1,16 @@
+{
+  "$schema": "../../../schema/breathing-pattern.v1.schema.json",
+  "schemaVersion": "1",
+  "id": "ocean",
+  "name": "Ozean-Wellenatmung (Urge Surfing)",
+  "shortName": "Ozean (4-1-4-1)",
+  "description": "Sanfter Rhythmus wie die Meereswellen am Ufer. Ideal bei innerer Unruhe, Stress und Suchtdruck.",
+  "locale": "de-DE",
+  "tags": ["calming", "urge-surfing"],
+  "phases": [
+    { "kind": "inhale", "durationMs": 4000 },
+    { "kind": "hold", "durationMs": 1000, "label": "Halten & Spüren" },
+    { "kind": "exhale", "durationMs": 4000, "label": "Ausatmen wie die Wellen" },
+    { "kind": "hold", "durationMs": 1000, "label": "Ruhe" }
+  ]
+}

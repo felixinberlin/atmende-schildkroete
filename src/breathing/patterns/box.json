@@ -1,0 +1,16 @@
+{
+  "$schema": "../../../schema/breathing-pattern.v1.schema.json",
+  "schemaVersion": "1",
+  "id": "box",
+  "name": "Box Breathing / Vier-Viereck-Atmung",
+  "shortName": "Box (4-4-4-4)",
+  "description": "Vier gleich lange Phasen (4-4-4-4). Verwendet zur akuten Nervenberuhigung und Impulskontrolle.",
+  "locale": "de-DE",
+  "tags": ["focus", "calming"],
+  "phases": [
+    { "kind": "inhale", "durationMs": 4000 },
+    { "kind": "hold", "durationMs": 4000, "label": "Halten" },
+    { "kind": "exhale", "durationMs": 4000 },
+    { "kind": "hold", "durationMs": 4000, "label": "Ruhe" }
+  ]
+}

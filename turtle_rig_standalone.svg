@@ -1,0 +1,299 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="100 80 600 440" width="100%" height="100%" id="tikaTurtleStandalone">
+  <defs>
+    <linearGradient id="grad-belly-warmth-solo" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="var(--color-belly-base, #fde047)"/>
+      <stop offset="100%" stop-color="var(--color-belly-shadow, #eab308)"/>
+    </linearGradient>
+
+    <radialGradient id="grad-bubble-solo" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#7dd3fc" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.3"/>
+    </radialGradient>
+
+    <g id="bubble-def-solo">
+      <circle cx="0" cy="0" r="10" fill="url(#grad-bubble-solo)"/>
+      <circle cx="-3" cy="-3" r="2.8" fill="#ffffff" opacity="0.85"/>
+      <circle cx="0" cy="0" r="10" fill="none" stroke="#38bdf8" stroke-width="1.2" opacity="0.7"/>
+    </g>
+  </defs>
+
+  <style><![CDATA[
+    :root, svg {
+      --breath-cycle: 8s;
+      --anim-state: running;
+
+      --color-skin: #10b981;
+      --color-skin-dark: #047857;
+      --color-skin-deep: #065f46;
+      --color-skin-shadow: #059669;
+      --color-skin-spot: #6ee7b7;
+      --color-skin-spot-soft: #a7f3d0;
+      --color-shell-base: #065f46;
+      --color-shell-rim: #f59e0b;
+      --color-shell-scute-top: #34d399;
+      --color-shell-scute-mid: #10b981;
+      --color-shell-scute-low: #059669;
+      --color-belly-base: #fde047;
+      --color-belly-shadow: #eab308;
+      --color-belly-groove: #ca8a04;
+      --color-blush: #fb7185;
+    }
+
+    .anim-paused * { animation-play-state: paused !important; }
+
+    .anim-float {
+      animation: turtleFloat var(--breath-cycle) ease-in-out infinite;
+      transform-origin: 400px 320px;
+      animation-play-state: var(--anim-state);
+    }
+    @keyframes turtleFloat {
+      0%   { transform: translateY(0px) rotate(0deg); }
+      25%  { transform: translateY(-10px) rotate(-0.5deg); }
+      50%  { transform: translateY(-16px) rotate(0.6deg); }
+      75%  { transform: translateY(-7px) rotate(0.2deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+
+    .anim-belly {
+      animation: bellyExpand var(--breath-cycle) ease-in-out infinite;
+      transform-origin: 380px 320px;
+      animation-play-state: var(--anim-state);
+    }
+    @keyframes bellyExpand {
+      0%   { transform: scale(1, 1); }
+      42%  { transform: scale(1.05, 1.16) translateY(2px); }
+      54%  { transform: scale(1.05, 1.16) translateY(2px); }
+      94%  { transform: scale(0.98, 0.96) translateY(-1px); }
+      100% { transform: scale(1, 1); }
+    }
+
+    .anim-shell {
+      animation: shellExpand var(--breath-cycle) ease-in-out infinite;
+      transform-origin: 380px 285px;
+      animation-play-state: var(--anim-state);
+    }
+    @keyframes shellExpand {
+      0%   { transform: scale(1, 1) translateY(0px); }
+      42%  { transform: scale(1.04, 1.05) translateY(-5px); }
+      54%  { transform: scale(1.04, 1.05) translateY(-5px); }
+      94%  { transform: scale(0.99, 0.99) translateY(1px); }
+      100% { transform: scale(1, 1) translateY(0px); }
+    }
+
+    .anim-head {
+      animation: headTilt var(--breath-cycle) ease-in-out infinite;
+      transform-origin: 470px 310px;
+      animation-play-state: var(--anim-state);
+    }
+    @keyframes headTilt {
+      0%   { transform: rotate(0deg) translate(0px, 0px); }
+      42%  { transform: rotate(-3.5deg) translate(7px, -6px); }
+      54%  { transform: rotate(-3.5deg) translate(7px, -6px); }
+      94%  { transform: rotate(1.2deg) translate(-2px, 2px); }
+      100% { transform: rotate(0deg) translate(0px, 0px); }
+    }
+
+    .anim-eye {
+      animation: eyeRestBlink var(--breath-cycle) ease-in-out infinite;
+      transform-origin: 605px 235px;
+      animation-play-state: var(--anim-state);
+    }
+    @keyframes eyeRestBlink {
+      0%, 40%   { transform: scaleY(1); }
+      44%, 52%  { transform: scaleY(0.75); }
+      56%, 88%  { transform: scaleY(1); }
+      90%       { transform: scaleY(0.12); }
+      92%, 100% { transform: scaleY(1); }
+    }
+
+    .anim-flipper-front-rt {
+      animation: flipperGlideRt var(--breath-cycle) ease-in-out infinite;
+      transform-origin: 470px 320px;
+      animation-play-state: var(--anim-state);
+    }
+    @keyframes flipperGlideRt {
+      0%   { transform: rotate(0deg); }
+      42%  { transform: rotate(-6.5deg) translateY(-4px); }
+      54%  { transform: rotate(-6.5deg) translateY(-4px); }
+      94%  { transform: rotate(3deg) translateY(2px); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .anim-flipper-front-lt {
+      animation: flipperGlideLt var(--breath-cycle) ease-in-out infinite;
+      transform-origin: 470px 250px;
+      animation-play-state: var(--anim-state);
+    }
+    @keyframes flipperGlideLt {
+      0%   { transform: rotate(0deg); }
+      42%, 54% { transform: rotate(-5deg) translateY(-3px); }
+      94%  { transform: rotate(2deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .anim-flipper-rear-rt {
+      animation: rearPaddleRt var(--breath-cycle) ease-in-out infinite;
+      transform-origin: 245px 335px;
+      animation-play-state: var(--anim-state);
+    }
+    @keyframes rearPaddleRt {
+      0%, 100% { transform: rotate(0deg); }
+      42%, 54% { transform: rotate(3.5deg) translateY(-2px); }
+      94%  { transform: rotate(-2deg); }
+    }
+
+    .anim-flipper-rear-lt {
+      animation: rearPaddleLt var(--breath-cycle) ease-in-out infinite;
+      transform-origin: 270px 290px;
+      animation-play-state: var(--anim-state);
+    }
+    @keyframes rearPaddleLt {
+      0%, 100% { transform: rotate(0deg); }
+      42%, 54% { transform: rotate(3deg) translateY(-2px); }
+      94%  { transform: rotate(-1.5deg); }
+    }
+
+    .anim-bubble-stream-1 {
+      animation: bubbleRise1 var(--breath-cycle) ease-out infinite;
+      animation-play-state: var(--anim-state);
+    }
+    @keyframes bubbleRise1 {
+      0%, 54%  { opacity: 0; transform: translate(674px, 250px) scale(0.2); }
+      58%      { opacity: 0.85; transform: translate(692px, 230px) scale(0.7); }
+      80%      { opacity: 0.75; transform: translate(726px, 160px) scale(1.05); }
+      94%      { opacity: 0; transform: translate(749px, 90px) scale(1.3); }
+      100%     { opacity: 0; transform: translate(749px, 90px) scale(1.3); }
+    }
+
+    .anim-bubble-stream-2 {
+      animation: bubbleRise2 var(--breath-cycle) ease-out infinite;
+      animation-play-state: var(--anim-state);
+    }
+    @keyframes bubbleRise2 {
+      0%, 60%  { opacity: 0; transform: translate(674px, 250px) scale(0.2); }
+      65%      { opacity: 0.8; transform: translate(689px, 235px) scale(0.6); }
+      84%      { opacity: 0.7; transform: translate(714px, 170px) scale(0.9); }
+      96%      { opacity: 0; transform: translate(734px, 110px) scale(1.15); }
+      100%     { opacity: 0; transform: translate(734px, 110px) scale(1.15); }
+    }
+  ]]></style>
+
+  <!-- ==================== MAIN TURTLE CHARACTER RIG ==================== -->
+  <g id="layer-turtle-character" class="modular-layer anim-float" data-layer="character" data-pivot-x="400" data-pivot-y="320">
+
+    <!-- Distant Limbs -->
+    <g id="rig-limbs-distant" data-part="limbs-distant">
+      <g id="rig-flipper-rear-lt" class="anim-flipper-rear-lt" data-part="flipper-rear-lt" data-pivot-x="270" data-pivot-y="290">
+        <path d="M 270 290 C 230 250 170 260 130 290 C 120 298 130 315 150 315 C 190 315 240 310 270 290 Z" fill="var(--color-skin-dark)"/>
+      </g>
+      <g id="rig-flipper-front-lt" class="anim-flipper-front-lt" data-part="flipper-front-lt" data-pivot-x="470" data-pivot-y="250">
+        <path d="M 470 250 C 510 180 570 120 630 110 C 645 108 650 120 640 135 C 595 190 535 255 480 270 Z" fill="var(--color-skin-dark)"/>
+      </g>
+    </g>
+
+    <!-- Tail -->
+    <g id="rig-tail" data-part="tail" data-pivot-x="230" data-pivot-y="330">
+      <path d="M 230 320 C 190 325 150 338 135 348 C 150 355 190 350 235 338 Z" fill="var(--color-skin)"/>
+    </g>
+
+    <!-- Plastron / Soft Ventral Belly -->
+    <g id="rig-plastron" class="anim-belly" data-part="plastron-belly" data-pivot-x="380" data-pivot-y="320">
+      <path id="part-belly-base" d="M 250 320 C 270 380 360 415 450 395 C 480 388 495 365 500 330 C 460 345 360 355 250 320 Z" fill="url(#grad-belly-warmth-solo)"/>
+      <path id="part-belly-shadow" d="M 280 350 C 340 395 420 405 460 385 C 440 375 360 365 300 340 Z" fill="var(--color-belly-shadow)"/>
+      <path id="part-belly-groove-1" d="M 340 345 C 350 372 370 392 390 398" stroke="var(--color-belly-groove)" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path id="part-belly-groove-2" d="M 415 340 C 430 365 445 380 460 382" stroke="var(--color-belly-groove)" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path id="part-belly-highlight" d="M 280 340 C 335 375 405 380 450 365" stroke="#fef9c3" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+    </g>
+
+    <!-- Carapace / Dorsal Shell -->
+    <g id="rig-carapace" class="anim-shell" data-part="carapace-shell" data-pivot-x="380" data-pivot-y="285">
+      <path id="part-shell-dome" d="M 215 320 C 210 200 320 145 440 160 C 510 170 545 225 530 320 C 475 345 275 345 215 320 Z" fill="var(--color-shell-base)"/>
+      <path id="part-shell-rim" d="M 210 320 C 230 345 300 358 385 354 C 460 350 515 342 535 320 C 525 338 460 365 385 362 C 295 360 225 340 210 320 Z" fill="var(--color-shell-rim)"/>
+
+      <g id="rig-scutes" data-part="scute-plates">
+        <g id="scute-vertebral-1">
+          <path d="M 255 240 L 310 220 L 330 260 L 290 280 L 250 265 Z" fill="var(--color-skin)"/>
+          <circle cx="288" cy="254" r="3.5" fill="var(--color-skin-spot-soft)" opacity="0.8"/>
+        </g>
+        <g id="scute-vertebral-2">
+          <path d="M 320 215 L 390 195 L 430 220 L 400 260 L 340 255 Z" fill="var(--color-shell-scute-top)"/>
+          <circle cx="375" cy="230" r="4" fill="#ecfdf5" opacity="0.9"/>
+        </g>
+        <g id="scute-vertebral-3">
+          <path d="M 400 195 L 455 210 L 485 245 L 440 265 L 410 225 Z" fill="var(--color-skin)"/>
+          <circle cx="445" cy="232" r="3.5" fill="var(--color-skin-spot-soft)" opacity="0.8"/>
+        </g>
+        <g id="scute-costal-2">
+          <path d="M 345 265 L 405 268 L 435 310 L 375 315 L 330 295 Z" fill="var(--color-shell-scute-low)"/>
+          <circle cx="380" cy="290" r="3.5" fill="var(--color-skin-spot-soft)" opacity="0.8"/>
+        </g>
+        <g id="scute-costal-3">
+          <path d="M 445 270 L 485 250 L 515 285 L 495 320 L 440 315 Z" fill="var(--color-skin)"/>
+          <circle cx="475" cy="290" r="3" fill="var(--color-skin-spot-soft)" opacity="0.8"/>
+        </g>
+        <g id="scute-costal-1">
+          <path d="M 285 285 L 325 295 L 340 325 L 280 325 L 250 305 Z" fill="var(--color-skin-dark)"/>
+          <circle cx="295" cy="308" r="3" fill="var(--color-skin-spot-soft)" opacity="0.8"/>
+        </g>
+      </g>
+
+      <path id="part-shell-sunbeam" d="M 260 215 C 330 170 410 175 465 195" stroke="var(--color-skin-spot-soft)" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+    </g>
+
+    <!-- Head & Neck Rig -->
+    <g id="rig-head-neck" class="anim-head" data-part="head-neck" data-pivot-x="470" data-pivot-y="310">
+      <path id="part-neck-base" d="M 470 315 C 500 320 540 310 575 280 C 585 265 575 240 550 230 C 515 220 480 240 460 265 Z" fill="var(--color-skin)"/>
+      <path id="part-throat-gular" d="M 535 290 C 555 304 575 298 590 282" stroke="var(--color-skin-shadow)" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
+      <path id="part-head-profile" d="M 545 240 C 555 195 615 190 655 215 C 690 238 695 275 670 295 C 640 315 585 310 555 280 C 542 268 540 252 545 240 Z" fill="var(--color-skin)"/>
+      <path id="part-chin-shadow" d="M 565 282 C 600 305 645 305 668 288 C 650 295 610 295 580 282 Z" fill="var(--color-skin-shadow)"/>
+      <circle id="part-nostril" cx="674" cy="250" r="2.5" fill="#064e3b" data-origin="true"/>
+      <path id="part-mouth" d="M 676 264 C 668 274 650 280 630 276" stroke="#064e3b" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <ellipse id="part-cheek" cx="628" cy="270" rx="9" ry="6" fill="var(--color-blush)" opacity="0.6"/>
+
+      <g id="part-head-scales" fill="var(--color-skin-spot)">
+        <circle cx="585" cy="215" r="4"/>
+        <circle cx="605" cy="210" r="5"/>
+        <circle cx="625" cy="218" r="4.5"/>
+      </g>
+
+      <g id="rig-eye" class="anim-eye" data-part="eye" data-pivot-x="605" data-pivot-y="235">
+        <ellipse id="eye-sclera" cx="605" cy="235" rx="15" ry="17" fill="#ffffff" stroke="var(--color-skin-deep)" stroke-width="2"/>
+        <ellipse id="eye-pupil" cx="608" cy="235" rx="11" ry="13" fill="#1e293b"/>
+        <g id="eye-sparkles" fill="#ffffff">
+          <circle cx="612" cy="230" r="4.5"/>
+          <circle cx="604" cy="242" r="2.2"/>
+          <circle cx="615" cy="239" r="1.3"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- Foreground Limbs -->
+    <g id="rig-limbs-foreground" data-part="limbs-foreground">
+      <g id="rig-flipper-front-rt" class="anim-flipper-front-rt" data-part="flipper-front-rt" data-pivot-x="470" data-pivot-y="320">
+        <path d="M 470 315 C 510 335 565 390 580 460 C 585 485 568 495 545 490 C 495 478 450 410 430 360 C 420 338 440 315 470 315 Z" fill="var(--color-skin)" stroke="var(--color-skin-shadow)" stroke-width="2"/>
+        <g fill="var(--color-skin-spot)">
+          <circle cx="475" cy="355" r="5"/>
+          <circle cx="500" cy="395" r="5.5"/>
+          <circle cx="525" cy="440" r="4.5"/>
+        </g>
+      </g>
+
+      <g id="rig-flipper-rear-rt" class="anim-flipper-rear-rt" data-part="flipper-rear-rt" data-pivot-x="245" data-pivot-y="335">
+        <path d="M 245 335 C 215 370 160 415 125 425 C 112 428 110 415 122 400 C 155 360 215 328 245 335 Z" fill="var(--color-skin)" stroke="var(--color-skin-shadow)" stroke-width="2"/>
+        <circle cx="170" cy="385" r="4" fill="var(--color-skin-spot)"/>
+      </g>
+    </g>
+
+    <!-- Breath Particle FX -->
+    <g id="rig-breath-fx" data-part="breath-fx">
+      <g id="bubble-cluster-1" class="anim-bubble-stream-1" data-origin-x="674" data-origin-y="250">
+        <use href="#bubble-def-solo" transform="scale(1.2)"/>
+      </g>
+      <g id="bubble-cluster-2" class="anim-bubble-stream-2" data-origin-x="674" data-origin-y="250">
+        <use href="#bubble-def-solo" transform="scale(0.85)"/>
+      </g>
+    </g>
+
+  </g>
+</svg>

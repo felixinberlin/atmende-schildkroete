@@ -1,0 +1,14 @@
+{
+  "$schema": "../../../schema/breathing-pattern.v1.schema.json",
+  "schemaVersion": "1",
+  "id": "coherence",
+  "name": "Kohärenz-Atmung (5.5s - 5.5s HRV)",
+  "shortName": "Kohärenz (5.5s - 5.5s)",
+  "description": "Etwa 5,5 Atemzüge pro Minute (≈0,1 Hz). Bringt Herzratenvariabilität (HRV) und Atmung in Gleichklang.",
+  "locale": "de-DE",
+  "tags": ["hrv", "calming"],
+  "phases": [
+    { "kind": "inhale", "durationMs": 5500 },
+    { "kind": "exhale", "durationMs": 5500 }
+  ]
+}
