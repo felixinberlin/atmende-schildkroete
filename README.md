@@ -207,7 +207,32 @@ soundProfileRegistry.register('forest-stream', {
 
 ## 🔒 Privatsphäre & Datensicherheit
 
-Alle Reisetagebuch-Einträge, erstellten Geschichten und Mikrofon-Signale verbleiben **vollständig lokal im Webbrowser** des Nutzers (`localStorage` bzw. flüchtiger AudioContext im Arbeitsspeicher). Es werden keinerlei Audioaufnahmen oder persönliche Daten übertragen.
+Alle Reisetagebuch-Einträge, erstellten Geschichten und Mikrofon-Signale verbleiben **vollständig lokal im Webbrowser** des Nutzers (`localStorage` bzw. flüchtiger AudioContext im Arbeitsspeicher). Es werden keinerlei Audioaufnahmen, Telemetriedaten oder persönliche Nutzerprofile an externe Server übertragen.
+
+---
+
+## ⚖️ Rechtlicher Hinweis & Disclaimer (MDCG 2019-11)
+
+*Tika – Die atmende Schildkröte* ist ein interaktives Open-Source-Achtsamkeits-, Pacing- und Entspannungswerkzeug zur Förderung des subjektiven Wohlbefindens.
+
+- **Kein Medizinprodukt:** Tika ist **kein** Medizinprodukt im Sinne der europäischen Medizinprodukte-Verordnung (EU-MDR 2017/745, Regel 11) und des Leitfadens MDCG 2019-11.
+- **Keine Diagnostik oder Therapie:** Die Software dient weder der Diagnose, Überwachung, Linderung noch der Heilung oder Behandlung von Erkrankungen (wie z. B. klinischer Panikstörung ICD-10 F41.0, generalisierter Angststörung F41.1 oder Asthma).
+- **Kein Ersatz für medizinische Hilfe:** Die Nutzung ersetzt keinesfalls eine ärztliche, psychotherapeutische oder psychiatrische Behandlung. Bei akuter Atemnot oder Panikattacken ist sofort qualifiziertes Fachpersonal aufzusuchen.
+
+---
+
+## 📚 Wissenschaftliche Quellen & Physiologische Fundierung
+
+1. **Herzratenvariabilitäts-Biofeedback (HRVB):**  
+   *Lehrer, P., Kaur, K., Sharma, A., et al. (2020).* Heart rate variability biofeedback: how and why does it work? *Neuroscience & Biobehavioral Reviews / Frontiers in Psychology*, PMID: [32389728](https://pubmed.ncbi.nlm.nih.gov/32389728/). (Große bis mittlere Effektstärken $g \approx 0{,}73 - 0{,}83$ bei Angst & Depression).
+2. **0,1-Hz-Baroreflex-Resonanz (Mayer-Wellen):**  
+   *Vaschillo, E. G., Vaschillo, B., & Lehrer, P. M. (2006).* Characteristics of resonance in heart rate variability stimulated by biofeedback. *Applied Psychophysiology and Biofeedback*, PMID: [16843467](https://pubmed.ncbi.nlm.nih.gov/16843467/).
+3. **Interozeption & Alexithymie bei Neurodivergenz:**  
+   *Garfinkel, S. N., Critchley, H. D., et al. (2015).* Interoceptive dimensions: sensory processing, alexithymia and anxiety in autism spectrum conditions. *Philosophical Transactions of the Royal Society B*, PMID: [25547432](https://pubmed.ncbi.nlm.nih.gov/25547432/).
+4. **Suffocation False Alarm Theory:**  
+   *Klein, D. F. (1993).* False suffocation alarms, spontaneous panics, and related conditions: An integrative hypothesis. *Archives of General Psychiatry*, PMID: [8489323](https://pubmed.ncbi.nlm.nih.gov/8489323/).
+5. **Slow Breathing Systematic Review:**  
+   *Zaccaro, A., et al. (2018).* How Breath-Control Can Change Your Life: A Systematic Review on Psycho-Physiological Correlates of Slow Breathing. *Frontiers in Human Neuroscience*, PMC: [PMC6137615](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6137615/).
 
 ---
 

@@ -106,3 +106,26 @@ Durch das UMD-Build-Target (`TurtleBreathing`) kann sie wie folgt eingebunden we
   session.start();
 </script>
 ```
+
+---
+
+## 7. Neurokardiovaskuläre & Regulatorische Spezifikation
+
+### 7.1 Baroreflex-Resonanz ($0{,}1\,\text{Hz}$ / Mayer-Wellen)
+Das menschliche kardiovaskuläre System besitzt eine phasische Eigenresonanz bei circa $0{,}1\,\text{Hz}$ ($\approx 6\,\text{Atemzüge/Minute}$), bedingt durch die Latenzzeit der Barorezeptor-Rückkopplungsschleife zwischen Aortenbogen und Hirnstamm (Vaschillo et al., 2006).
+
+Tikas Atemmuster *Herz-Kohärenz* (`coherence`) arbeitet mit exakt:
+$$f_{\text{resp}} = \frac{1}{5{,}5\,\text{s} + 5{,}5\,\text{s}} = \frac{1}{11\,\text{s}} \approx 0{,}091\,\text{Hz}$$
+Dies synchronisiert die Herzratenvariabilität (RSA) phasengenau mit den Mayer-Wellen des Blutdrucks und maximiert die vagale efferente Stimulation, ohne den Anwender durch willkürliche Valsalva-Atemanhaltephasen zu belasten.
+
+### 7.2 Hysteretischer Schmitt-Trigger gegen Prellen (*State Fluttering*)
+In der On-Device-Signalverarbeitung wird das Umschalten zwischen Ruhe (`idle`) und aktiver Atemphasenerkennung durch einen Hysterese-Schwellenwert abgesichert:
+$$\text{Schaltgrenze Ein/Aus} = N_t + \Delta_{\text{high}}, \quad \text{Rückfallgrenze Pause} = N_t + \Delta_{\text{low}}$$
+mit $\Delta_{\text{high}} - \Delta_{\text{low}} \ge 6\,\text{dB}$. Der adaptive Rauschboden $N_t$ wird über gleitende Minimum-Statistik berechnet.
+
+### 7.3 MDR Regel 11 / MDCG 2019-11 Konformität
+Zur Wahrung des freien Open-Source-Status operiert Tika strikt als Achtsamkeits- und Entspannungswerkzeug:
+1. **Keine diagnostischen Vitalwert-Bewertungen:** Reines Rendering von Bewegung und Schall.
+2. **Keine therapeutischen Dosierungsalgorithmen:** Der Nutzer wählt selbstbestimmt Rhythmus und Dauer.
+3. **Vollständige Entkopplung von medizinischen Indikationen:** Tika erhebt keine Ansprüche nach Art. 2 Nr. 1 MDR.
+
